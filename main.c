@@ -34,11 +34,12 @@ void ProcessConnect(int listen_sock,int epoll_fd)
 	int client_sock = accept(listen_sock ,(struct sockaddr*)&client_addr,&len);	
 	if(client_sock<0) perror("accept:"),exit(-1);
 
+	//将完成连接的客户端套接字加入到epoll事件中
 	struct epoll_event ev;
 	ev.data.fd=client_sock;
 	ev.events=EPOLLIN;
 
-	int ret=epoll_ctl(epoll_fd,EPOLL_CTL_ADD,client_sock,&ev);
+	int ret=epoll_ctl(epoll_fd,EPOLL_CTL_ADD,client_sock,&ev);  
 	if(ret<0) perror("epoll_ctl add client_sock\n"),exit(-1);
 }
 
@@ -142,7 +143,7 @@ void ProsessRequest(int sock,int epoll_fd)
 		clear_header(sock);
 		exec_handing(sock,path,method,query_string,content_len);
 		close(sock);
-		epoll_ctl(epoll_fd, EPOLL_CTL_DEL, sock, NULL);
+		epoll_ctl(epoll_fd, EPOLL_CTL_DEL, sock, NULL); //完成读写的事件进行删除
 	}
 	else
 	{
