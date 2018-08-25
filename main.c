@@ -189,10 +189,10 @@ int main(int argc , char* argv[])
 		{
 			if(!(RetEvents[i].events & EPOLLIN))
 				continue;
-			if(RetEvents[i].data.fd==listen_sock)
+			if(RetEvents[i].data.fd==listen_sock)   //如果监听套接字有写事件来
 				ProcessConnect(listen_sock,epoll_fd);
 			else
-				ProsessRequest(RetEvents[i].data.fd,epoll_fd);
+				ProsessRequest(RetEvents[i].data.fd,epoll_fd); //客户端套接字有写事件
 		}
 	}
 	return 0;
